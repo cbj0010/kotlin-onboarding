@@ -10,12 +10,8 @@ fun checkGame(inputNum: Int): Int {
         var j = i
         do {
             var divideTen = j % 10
-            when (checkRemainderNumber(divideTen)) {
-                1 -> count++
-            }
-            when (checkQuotientNumber(i)) {
-                1 -> count++
-            }
+            count+= checkRemainderNumber(divideTen)
+            count+= checkQuotientNumber(i)
             j /= 10
         } while (j / 10 !== 0)
         i++
@@ -24,7 +20,7 @@ fun checkGame(inputNum: Int): Int {
 }
 
 fun checkRemainderNumber(remainder: Int): Int {
-    if (remainder.equals(3) || remainder.equals(6) || remainder.equals(9)) {
+    if (remainder%3==0) {
         return 1
     } else return 0
 }
