@@ -17,34 +17,51 @@ visitors 에 있는 id 개수만큼 +1
 상위 5명을 정렬함
  */
 
-private fun findUserFriend(     //유저와 친구인 애
+
+private fun findUserFriend(
+    //유저와 친구인 애
     friends: List<List<String>>,
     user: String,
-    userFriendSet: MutableSet<String>
 ): MutableSet<String> {
+    val userFriendSet: MutableSet<String> = mutableSetOf()
     for (friendlist in friends) {
         if (friendlist[0] == user) userFriendSet.add(friendlist[1])
         if (friendlist[1] == user) userFriendSet.add(friendlist[0])
     }
+    println("userFriendSet $userFriendSet")
     return userFriendSet
 }
 
 private fun friendOfFriend(   //친구의 친구
     friends: List<List<String>>,
-    user: String,
-    userFriendList: MutableSet<String>
-) {
-    val friendList = findUserFriend(friends, user, userFriendList).sorted()
+    user: String
+): MutableMap<String, Int> {
+    val friendList = findUserFriend(friends, user).sorted()
+    val friendMap = mutableMapOf<String, Int>()
     for (list in friends) {
+        if (user in list) {
+            continue
+        }
         if (list[0] in friendList) {
-            plusScore(list[0])
+            println("list[0] ${list[0]} friendList $friendList")
+            plusScore(friendMap, list[0], 10)
         }
         if (list[1] in friendList) {
-            plusScore(list[1])
+            plusScore(friendMap, list[1], 10)
         }
     }
+    println(friendMap)
+    return friendMap
 }
 
-private fun plusScore(name: String) {
+private fun plusScore(nameWithScore: MutableMap<String, Int>, name: String, score: Int) {
+    val currentValue = nameWithScore[name] ?: 0 // 기존 값 불러오기. 값이 없으면 0으로 초기화
 
+    if (name in nameWithScore) {
+        println("nameWithScore in $nameWithScore")
+        nameWithScore[name] = currentValue + 10 // 10 더한 값으로 업데이트
+    } else {
+        println("nameWithScore else $nameWithScore")
+        nameWithScore.put(name, score)
+    }
 }
