@@ -5,7 +5,10 @@ fun solution7(
     friends: List<List<String>>,
     visitors: List<String>
 ): List<String> {
-    TODO("프로그램 구현")
+    val result = removeMyfriend(friends, user, visitors)
+    val sortedList = result.toList().sortedByDescending { it.second }
+    val stringList: List<String> = sortedList.map { it.first }
+    return stringList
 }
 
 /*
@@ -17,7 +20,6 @@ visitors 에 있는 id 개수만큼 +1
 상위 5명을 정렬함
  */
 
-
 private fun findUserFriend(
     //유저와 친구인 애
     friends: List<List<String>>,
@@ -28,7 +30,7 @@ private fun findUserFriend(
         if (friendlist[0] == user) userFriendSet.add(friendlist[1])
         if (friendlist[1] == user) userFriendSet.add(friendlist[0])
     }
-    println("userFriendSet $userFriendSet")
+//    println("userFriendSet $userFriendSet")
     return userFriendSet
 }
 
@@ -44,10 +46,10 @@ private fun friendOfFriend(   //친구의 친구
         }
         if (list[0] in friendList) {
             println("list[0] ${list[0]} friendList $friendList")
-            plusScore(friendMap, list[0], 10)
+            plusScore(friendMap, list[1], 10)
         }
         if (list[1] in friendList) {
-            plusScore(friendMap, list[1], 10)
+            plusScore(friendMap, list[0], 10)
         }
     }
     println(friendMap)
@@ -59,9 +61,49 @@ private fun plusScore(nameWithScore: MutableMap<String, Int>, name: String, scor
 
     if (name in nameWithScore) {
         println("nameWithScore in $nameWithScore")
-        nameWithScore[name] = currentValue + 10 // 10 더한 값으로 업데이트
+        nameWithScore[name] = currentValue.plus(score) // 10 더한 값으로 업데이트
     } else {
         println("nameWithScore else $nameWithScore")
         nameWithScore.put(name, score)
     }
+}
+
+
+private fun addVisitorTofriend(
+    friends: List<List<String>>,
+    user: String,
+    visitors: List<String>
+): MutableMap<String, Int> {
+    val friendList = friendOfFriend(friends, user)
+
+    val score = 1
+    for (list in visitors) {
+        val currentValue = friendList[list] ?: 0 // 기존 값 불러오기. 값이 없으면 0으로 초기화
+//        println("list $list  visitors $visitors")
+        if (list in friendList) {
+            println("in list $list  friendList $friendList")
+            friendList[list] = currentValue.plus(score)
+        } else {
+            println("else list $list  friendList $friendList")
+            friendList.put(list, score)
+        }
+        println("friendList $friendList")
+    }
+    return friendList
+}
+
+private fun removeMyfriend(
+    friends: List<List<String>>,
+    user: String,
+    visitors: List<String>
+): MutableMap<String, Int> {
+    val resultFriend = addVisitorTofriend(friends, user, visitors)
+    val myFriend = findUserFriend(friends, user).sorted()
+    for (index in myFriend.indices){
+        if (resultFriend.contains(myFriend[index]) ){
+            resultFriend.remove(myFriend[index])
+        }
+    }
+    println(resultFriend)
+    return resultFriend
 }
