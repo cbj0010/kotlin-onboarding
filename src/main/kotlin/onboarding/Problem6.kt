@@ -9,17 +9,13 @@ private fun splitName(forms: List<List<String>>): List<String> {
     val overLapName = mutableSetOf<String>()
     for (index in forms.indices) {
         val nickName = forms[index][1]
-        println("nickName $nickName")
         for (i in 0..nickName.length - 2) {
             val spliteName = nickName.substring(i, i + 2)
-            println("spliteName $spliteName")
             for (j in 0 ..forms.size-1) {
                 if (nickName != forms[j][1] && forms[j][1].contains(spliteName)) {
-                    println("contains ${forms[j][1]}")
                     overLapName.add(forms[j][0])
                 }
             }
-            println()
         }
     }
     return overLapName.sorted()
